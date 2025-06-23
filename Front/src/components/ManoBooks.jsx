@@ -9,7 +9,9 @@ function ManoBooks() {
 
   // Užkrauk registracijas
   const fetchRegistracijos = async () => {
-    const res = await axios.get("http://localhost:3030/api/v1/registracijos", { withCredentials: true });
+    const res = await axios.get("http://localhost:3030/api/v1/registracijos", {
+      withCredentials: true,
+    });
     setRegistracijos(res.data.data.registracijos);
   };
 
@@ -27,15 +29,17 @@ function ManoBooks() {
   };
 
   const handleDelete = async (id) => {
-    await axios.delete(`http://localhost:3030/api/v1/registracijos/${id}`, { withCredentials: true });
-    setRegistracijos(registracijos.filter(r => r.id !== id));
+    await axios.delete(`http://localhost:3030/api/v1/registracijos/${id}`, {
+      withCredentials: true,
+    });
+    setRegistracijos(registracijos.filter((r) => r.id !== id));
   };
 
   const handleComment = async (id) => {
     if (!datos[id]) {
-      setSuccessMessages(prev => ({
+      setSuccessMessages((prev) => ({
         ...prev,
-        [id]: "Norint siųsti komentarą, privaloma pasirinkti pratesimo datą."
+        [id]: "Norint siųsti komentarą, privaloma pasirinkti pratesimo datą.",
       }));
       return;
     }
@@ -45,16 +49,16 @@ function ManoBooks() {
         { komentaras: komentarai[id], pasirinkta_data: datos[id] },
         { withCredentials: true }
       );
-      setSuccessMessages(prev => ({
+      setSuccessMessages((prev) => ({
         ...prev,
-        [id]: "Ačiū už jūsų paliktą komentarą!"
+        [id]: "Ačiū už jūsų paliktą komentarą!",
       }));
       fetchRegistracijos();
-      setKomentarai(prev => ({ ...prev, [id]: "" }));
+      setKomentarai((prev) => ({ ...prev, [id]: "" }));
     } catch (err) {
-      setSuccessMessages(prev => ({
+      setSuccessMessages((prev) => ({
         ...prev,
-        [id]: err.response?.data?.message || "Nepavyko išsiųsti komentaro."
+        [id]: err.response?.data?.message || "Nepavyko išsiųsti komentaro.",
       }));
     }
   };
@@ -63,26 +67,51 @@ function ManoBooks() {
     <div>
       <h2>Mano knygos</h2>
       {registracijos.length === 0 && <p>Neturite užsiregistravęs į knygų.</p>}
-      {registracijos.map(reg => (
-        <div key={reg.id} style={{ border: "1px solid #ccc", margin: 8, padding: 8 }}>
-          <div><b>Pavadinimas:</b> {reg.book?.pavadinimas}</div>
-          <div><b>Aprašymas:</b> {reg.book?.aprasymas}</div>
-          <div><b>Kaina:</b> {reg.book?.kaina} Eur</div>
+      {registracijos.map((reg) => (
+        <div
+          key={reg.id}
+          style={{ border: "1px solid #ccc", margin: 8, padding: 8 }}
+        >
           <div>
-            <b>Knyga laisva nuo:</b> {reg.book?.data1 ? new Date(reg.book.data1).toLocaleDateString() : "Nenurodyta"} <br />
-            <b>Knyga laisva iki:</b> {reg.book?.data2 ? new Date(reg.book.data2).toLocaleDateString() : "Nenurodyta"} <br />
-            <b>Mano rezervacijos data:</b> {reg.pasirinkta_data ? new Date(reg.pasirinkta_data).toLocaleDateString() : "Nepasirinkta"} <br />
+            <b>Pavadinimas:</b> {reg.book?.pavadinimas}
+          </div>
+          <div>
+            <b>Aprašymas:</b> {reg.book?.aprasymas}
+          </div>
+          <div>
+            <b>Kaina:</b> {reg.book?.kaina} Eur
+          </div>
+          <div>
+            <b>Knyga laisva nuo:</b>{" "}
+            {reg.book?.data1
+              ? new Date(reg.book.data1).toLocaleDateString("lt-LT", { year: "numeric", month: "2-digit", day: "2-digit" })
+              : "Nenurodyta"}{" "}
+            <br />
+            <b>Knyga laisva iki:</b>{" "}
+            {reg.book?.data2
+              ? new Date(reg.book.data1).toLocaleDateString("lt-LT", { year: "numeric", month: "2-digit", day: "2-digit" })
+              : "Nenurodyta"}{" "}
+            <br />
+            <b>Mano rezervacijos data:</b>{" "}
+            {reg.pasirinkta_data
+              ? new Date(reg.book.data1).toLocaleDateString("lt-LT", { year: "numeric", month: "2-digit", day: "2-digit" })
+              : "Nepasirinkta"}{" "}
+            <br />
             <input
               type="date"
               value={datos[reg.id] ?? reg.pasirinkta_data ?? ""}
-              onChange={e => setDatos({ ...datos, [reg.id]: e.target.value })}
+              onChange={(e) => setDatos({ ...datos, [reg.id]: e.target.value })}
             />
-            <button onClick={() => handleUpdate(reg.id)}>Pratęsti pasirinkta datą iki</button>
+            <button onClick={() => handleUpdate(reg.id)}>
+              Pratęsti pasirinkta datą iki
+            </button>
           </div>
           <button onClick={() => handleDelete(reg.id)}>Atšaukti</button>
-          {(reg.dalyvauta || (reg.pasirinkta_data && new Date(reg.pasirinkta_data) < new Date())) && (
+          {(reg.dalyvauta ||
+            (reg.pasirinkta_data &&
+              new Date(reg.pasirinkta_data) < new Date())) && (
             <form
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault();
                 handleComment(reg.id);
               }}
@@ -91,7 +120,9 @@ function ManoBooks() {
                 name="komentaras"
                 placeholder="Jūsų komentaras"
                 value={komentarai[reg.id] ?? ""}
-                onChange={e => setKomentarai({ ...komentarai, [reg.id]: e.target.value })}
+                onChange={(e) =>
+                  setKomentarai({ ...komentarai, [reg.id]: e.target.value })
+                }
               />
               <button
                 type="submit"
@@ -101,7 +132,13 @@ function ManoBooks() {
               </button>
               {/* Pranešimas po komentaro siuntimo */}
               {successMessages[reg.id] && (
-                <div className={successMessages[reg.id].startsWith("Ačiū") ? "text-green-600 font-bold my-2" : "text-red-600 font-bold my-2"}>
+                <div
+                  className={
+                    successMessages[reg.id].startsWith("Ačiū")
+                      ? "text-green-600 font-bold my-2"
+                      : "text-red-600 font-bold my-2"
+                  }
+                >
                   {successMessages[reg.id]}
                 </div>
               )}
