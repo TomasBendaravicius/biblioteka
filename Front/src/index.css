@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+.active {
+  @apply bg-blue-300;
+}
+
+/* Knygų formos ir sąrašo stiliai */
+.book-form {
+  @apply flex flex-col gap-4 p-6 m-5 bg-white rounded-lg shadow-md;
+}
+
+.book-list {
+  @apply flex flex-col gap-4 p-6 m-5 bg-white rounded-lg shadow-md;
+}
+
+.book-card {
+  @apply flex justify-between border m-1 p-5 items-center gap-4 bg-white rounded-lg shadow-md;
+}
+
+.book-details {
+  @apply flex flex-col gap-3;
+}
+
+.book-actions {
+  @apply flex gap-10;
+}
+
+.btn {
+  @apply px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors;
+}
